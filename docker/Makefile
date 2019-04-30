@@ -53,9 +53,10 @@ release:
 	docker tag ${DOCKER_IMAGE_NAME}:${TARGET} ${DOCKER_IMAGE_NAME}:latest
 	docker push ${DOCKER_IMAGE_NAME}:latest
 	docker push ${DOCKER_IMAGE_NAME}:${TARGET}
-	lazo rancher --insecure upgrade bitcaster:bitsender bitcaster/bitsender:${TARGET}
-#	$(MAKE) bump
 
+#	$(MAKE) bump
+deploy:
+	lazo rancher --insecure upgrade bitcaster:bitsender bitcaster/bitsender:${TARGET}
 bump:
 	cd .. && bumpversion --config-file=.bumpversion.cfg num --commit
 
