@@ -10,12 +10,17 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def home():
+def index():
     resp = render_template('index.html')
-    resp.headers['server'] = os.environ.get('SERVER_NAME')
-
     return resp
-    # return render_template(str(Path(here / 'templates/index.html')))
+
+
+@app.route('/<page>/')
+def editor(page):
+    if page in ['message', 'params']:
+        resp = render_template('%s.html' % page, page=page)
+        return resp
+    return "", 404
 
 
 if __name__ == '__main__':

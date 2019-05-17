@@ -1,0 +1,92 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+</head>
+<body>
+<div class="container m-5">
+    <div class="container">
+
+        <form>
+            <div class="form-group">
+                <textarea class="form-control" name="message" rows="10">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam nisi mi, lacinia nec tincidunt sed, pellentesque vitae urna. Maecenas magna libero, dapibus non egestas at, auctor in odio. Phasellus faucibus arcu eget tincidunt vehicula. Nullam enim magna, interdum vel lorem ac, mattis commodo nisl. Ut maximus, erat non aliquam interdum, diam erat sodales risus, vel faucibus tortor ex non quam. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed tristique arcu ut ante maximus iaculis. Aenean sagittis, nulla a aliquet facilisis, metus lorem rutrum justo, vitae imperdiet velit velit sit amet turpis. Sed laoreet justo in nunc consectetur sagittis. Donec lorem nibh, venenatis at dignissim eu, tempor nec augue. Nam urna sem, sollicitudin in elementum a, lacinia ac eros. Suspendisse ac eleifend urna. Proin eget eleifend augue. Ut nec nisl molestie, tempor ligula nec, eleifend leo. Praesent non odio consequat, iaculis turpis venenatis, faucibus libero.
+                </textarea>
+            </div>
+            <input type="button" id="send" class="btn btn-primary" value="Send">
+
+        </form>
+    </div>
+    <input type="button" id="config" value="Configure" class="btn btn-success">
+    <div class="container-fluid d-none" id="configuration">
+        <form lass="form-inline container-fluid">
+            <input name="token" class="form-control" placeholder="token">
+            <input name="url" class="form-control" placeholder="url">
+            <input type="button" class="btn btn-primary save" value="Save">
+        </form>
+    </div>
+
+</div>
+<script>
+    var $token = $('input[name=token]');
+    var $url = $('input[name=url]');
+    var $message = $('textarea[name=message]');
+
+    $('#configuration .save').on('click', function () {
+        $('#configuration').removeClass('d-block').addClass('d-none');
+        $('#config').removeClass('d-none').addClass('d-block');
+        Cookies.set('url', $url.val());
+        Cookies.set('token', $token.val());
+    });
+
+    $('#config').on('click', function () {
+        $('#configuration').removeClass('d-none').addClass('d-block');
+        $('#config').removeClass('d-block').addClass('d-none');
+    });
+
+    $('#send').on('click', function () {
+        var token = "Key " + $token.val();
+
+        $.ajax({
+            url: $url.val(),
+            type: 'post',
+            dataType: 'json',
+            // contentType: 'application/json',
+            data: JSON.stringify({
+                message: $message.val(),
+            }),
+            xhrFields: {
+                withCredentials: true
+            },
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            crossDomain: true,
+            success: function (data) {
+                console.info(data);
+            },
+            error: function (data) {
+                console.info(data);
+            }
+        });
+
+    });
+
+    $url.val(Cookies.get('url'));
+    $token.val(Cookies.get('token'));
+
+</script>
+</body>
+</html>

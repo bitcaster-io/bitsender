@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container p-5">
+        <form>
+            <div class="row col-12 m-2">
+                <div class="col-5">Name</div>
+                <div class="col-5">Value</div>
+            </div>
+            {% for i in range(5) %}
+                <div class="row col-12 m-2">
+                    <div class="col-5">
+                        <input class="form-control param"
+                               value="param{{ i }}"
+                               data-value="#value-{{ i }}" type="text" name="param{{ i }}">
+                    </div>
+                    <div class="col-5">
+                        <input class="form-control"
+                               id="value-{{ i }}"
+                               value="value{{ i }}"
+                               type="text" name="value{{ i }}">
+                    </div>
+                </div>
+            {% endfor %}
+            <input type="button" id="send" class="btn btn-primary" value="Send">
+        </form>
+    </div>
+{% endblock content %}
+{% block script %}
+    {{ super() }}
+    <script>
+        $('#config').removeClass('d-none').show();
+        $('#send').on('click', function () {
+            var token = "Key " + $token.val();
+            var params = {};
+            $('.param').each(function(i, el){
+                var target = $(el).data('value');
+                {#console.log(i, $(el).val(), $(target).val() );#}
+                params[$(el).val()]=$(target).val();
+            });
+            console.log(params);
+            $.ajax({
+                url: $url.val(),
+                type: 'post',
+                dataType: 'json',
+                // contentType: 'application/json',
+                data: JSON.stringify(params),
+                xhrFields: {
+                    withCredentials: true
+                },
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "Authorization": token,
+                },
+                crossDomain: true,
+                success: function (data) {
+                    console.info(data);
+                },
+                error: function (data) {
+                    console.info(data);
+                }
+            });
+
+        });
+    </script>
+{% endblock %}
