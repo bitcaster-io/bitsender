@@ -11,7 +11,19 @@
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <style>
+        .toggle-password {
+            float: right;
+            margin-top: -27px;
+            margin-right: 10px;
+            position: relative;
+            z-index: 2;
+            cursor: pointer;
+            font-size: 12px;
+            color: gray;
+        }
 
+    </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
@@ -31,6 +43,7 @@
             </li>
         </ul>
     </div>
+    <input type="text" id="host" value="http://localhost:8000/" class="ml-3 col-4 d-none">
     <button class="d-none btn btn-outline-success my-2 my-sm-0" type="button" id="config">Configure</button>
 </nav>
 
@@ -41,10 +54,14 @@
                 <div class="container-fluid d-none" id="configuration">
                     <form lass="form-inline container-fluid">
                         <div class="col-12 m-2">
-                            <input name="token" class="form-control" placeholder="token">
+                            <input name="url" class="form-control" placeholder="url">
                         </div>
                         <div class="col-12 m-2">
-                            <input name="url" class="form-control" placeholder="url">
+                            <input type="password"
+                                   autocomplete="current-password"
+                                   name="token" class="form-control" placeholder="token">
+                            <span onclick="toggle(this)"
+                                  class="toggle-password">show</span>
                         </div>
                         <div class="row m-2 float-right">
                             <input type="button" class="btn btn-primary save" value="Save">
@@ -55,21 +72,38 @@
         </div>
     {% endblock %}
     <div id="content">
+        <div class="row col-12 ml-5 mr-5" id="info"></div>
         {% block content %}{% endblock content %}
     </div>
 {% endblock %}
 {% block script %}
     <script>
-        var $token = $('input[name=token]');
         var $url = $('input[name=url]');
-        var $message = $('textarea[name=message]');
+        var $token = $('input[name=token]');
+        var toggle = function (el) {
+            var $el = $(el);
+            switch ($el.html()) {
+                case 'show':
+                    $token.attr('type', 'text');
+                    $el.html('hide');
+                    break;
+                case 'hide':
+                    $token.attr('type', 'password');
+                    $el.html('show');
+                    break;
+            }
+        };
 
         $('#configuration .save').on('click', function () {
             $('#configuration').removeClass('d-block').addClass('d-none');
             $('#config').removeClass('d-none').addClass('d-block');
+            $('#content').show();
+
             Cookies.set('url-{{ page }}', $url.val());
             Cookies.set('token-{{ page }}', $token.val());
-            $('#content').show();
+
+            $('#info').html('Endpoint: ' + $url.val())
+
         });
 
         $('#config').on('click', function () {
@@ -80,7 +114,7 @@
 
         $url.val(Cookies.get('url-{{ page }}'));
         $token.val(Cookies.get('token-{{ page }}'));
-
+        $('#info').html('Endpoint: ' + $url.val())
     </script>
 {% endblock script %}
 

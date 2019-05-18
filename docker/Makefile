@@ -57,8 +57,6 @@ release:
 #	$(MAKE) bump
 deploy:
 	lazo rancher --insecure upgrade bitcaster:bitsender bitcaster/bitsender:${TARGET}
-bump:
-	cd .. && bumpversion --config-file=.bumpversion.cfg num --commit
 
 run:
 	$(MAKE) .run
