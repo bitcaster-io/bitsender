@@ -23,6 +23,13 @@
             color: gray;
         }
 
+        .alert {
+            position: absolute;
+            top: 50px;
+            width: 50%;
+            left: 50%;
+            z-index: 3333;
+        }
     </style>
 </head>
 <body>
@@ -46,77 +53,97 @@
     <input type="text" id="host" value="http://localhost:8000/" class="ml-3 col-4 d-none">
     <button class="d-none btn btn-outline-success my-2 my-sm-0" type="button" id="config">Configure</button>
 </nav>
-
-{% block body %}
-    {% block config %}
-        <div class="container p-3">
-            <div class="row col-12 pull-right">
-                <div class="container-fluid d-none" id="configuration">
-                    <form lass="form-inline container-fluid">
-                        <div class="col-12 m-2">
-                            <input name="url" class="form-control" placeholder="url">
-                        </div>
-                        <div class="col-12 m-2">
-                            <input type="password"
-                                   autocomplete="current-password"
-                                   name="token" class="form-control" placeholder="token">
-                            <span onclick="toggle(this)"
-                                  class="toggle-password">show</span>
-                        </div>
-                        <div class="row m-2 float-right">
-                            <input type="button" class="btn btn-primary save" value="Save">
-                        </div>
-                    </form>
+<div class="d-block" style="height: 600px;">
+    {% block body %}
+        {% block config %}
+            <div class="container p-3">
+                <div class="row col-12 pull-right">
+                    <div class="container-fluid d-none" id="configuration">
+                        <form lass="form-inline container-fluid">
+                            <div class="col-12 m-2">
+                                <input name="url" class="form-control" placeholder="url">
+                            </div>
+                            <div class="col-12 m-2">
+                                <input type="password"
+                                       autocomplete="current-password"
+                                       name="token" class="form-control" placeholder="token">
+                                <span onclick="toggle(this)"
+                                      class="toggle-password">show</span>
+                            </div>
+                            <div class="row m-2 float-right">
+                                <input type="button" class="btn btn-primary save" value="Save">
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
+        {% endblock %}
+        <div id="content">
+            <div id="message" class="alert d-none" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row col-12 pl-5 pr-5" id="info"></div>
+            {% block content %}{% endblock content %}
         </div>
     {% endblock %}
-    <div id="content">
-        <div class="row col-12 ml-5 mr-5" id="info"></div>
-        {% block content %}{% endblock content %}
-    </div>
-{% endblock %}
-{% block script %}
-    <script>
-        var $url = $('input[name=url]');
-        var $token = $('input[name=token]');
-        var toggle = function (el) {
-            var $el = $(el);
-            switch ($el.html()) {
-                case 'show':
-                    $token.attr('type', 'text');
-                    $el.html('hide');
-                    break;
-                case 'hide':
-                    $token.attr('type', 'password');
-                    $el.html('show');
-                    break;
+    {% block script %}
+        <script>
+            var $url = $('input[name=url]');
+            var $token = $('input[name=token]');
+            var toggle = function (el) {
+                var $el = $(el);
+                switch ($el.html()) {
+                    case 'show':
+                        $token.attr('type', 'text');
+                        $el.html('hide');
+                        break;
+                    case 'hide':
+                        $token.attr('type', 'password');
+                        $el.html('show');
+                        break;
+                }
+            };
+
+            $('#configuration .save').on('click', function () {
+                $('#configuration').removeClass('d-block').addClass('d-none');
+                $('#config').removeClass('d-none').addClass('d-block');
+                $('#content').show();
+
+                Cookies.set('url-{{ page }}', $url.val());
+                Cookies.set('token-{{ page }}', $token.val());
+
+                $('#info').html('Endpoint: ' + $url.val())
+
+            });
+
+            $('#config').on('click', function () {
+                $('#configuration').removeClass('d-none').addClass('d-block');
+                $('#config').removeClass('d-block').addClass('d-none');
+                $('#content').hide();
+            });
+
+            $url.val(Cookies.get('url-{{ page }}'));
+            $token.val(Cookies.get('token-{{ page }}'));
+            $('#info').html('Endpoint: ' + $url.val());
+
+            var showMessage = function (msg, level) {
+                $('#message').removeClass('d-none').addClass('alert-'+level).html(msg).show();
+                setTimeout(function () {
+                    $('#message').hide()
+                }, 3000);
+
             }
-        };
+        </script>
+    {% endblock script %}
+</div>
+<footer class="page-footer font-small">
 
-        $('#configuration .save').on('click', function () {
-            $('#configuration').removeClass('d-block').addClass('d-none');
-            $('#config').removeClass('d-none').addClass('d-block');
-            $('#content').show();
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3">Bitsender 0.23 - © 2018 Copyright OS4D Ltd</div>
+    <!-- Copyright -->
 
-            Cookies.set('url-{{ page }}', $url.val());
-            Cookies.set('token-{{ page }}', $token.val());
-
-            $('#info').html('Endpoint: ' + $url.val())
-
-        });
-
-        $('#config').on('click', function () {
-            $('#configuration').removeClass('d-none').addClass('d-block');
-            $('#config').removeClass('d-block').addClass('d-none');
-            $('#content').hide();
-        });
-
-        $url.val(Cookies.get('url-{{ page }}'));
-        $token.val(Cookies.get('token-{{ page }}'));
-        $('#info').html('Endpoint: ' + $url.val())
-    </script>
-{% endblock script %}
-
+</footer>
 </body>
 </html>

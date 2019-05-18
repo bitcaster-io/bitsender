@@ -34,15 +34,12 @@
             var params = {};
             $('.param').each(function(i, el){
                 var target = $(el).data('value');
-                {#console.log(i, $(el).val(), $(target).val() );#}
                 params[$(el).val()]=$(target).val();
             });
-            console.log(params);
             $.ajax({
                 url: $url.val(),
                 type: 'post',
                 dataType: 'json',
-                // contentType: 'application/json',
                 data: JSON.stringify(params),
                 xhrFields: {
                     withCredentials: true
@@ -60,7 +57,6 @@
                     console.info(data);
                 }
             });
-
         });
     </script>
 {% endblock %}
