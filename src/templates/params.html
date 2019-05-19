@@ -51,10 +51,11 @@
                 },
                 crossDomain: true,
                 success: function (data) {
-                    console.info(data);
+                    showMessage("Message sent.", "success")
                 },
                 error: function (data) {
                     console.info(data);
+                    showMessage("Unable to send message", "danger")
                 }
             });
         });

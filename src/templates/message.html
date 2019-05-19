@@ -39,11 +39,11 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam nisi mi, lacinia 
                 },
                 crossDomain: true,
                 success: function (data) {
-                    console.info(data);
-                    alert("Message sent.")
+                    showMessage("Message sent.", "success")
                 },
                 error: function (data) {
                     console.info(data);
+                    showMessage("Unable to send message", "danger")
                 }
             });
 
