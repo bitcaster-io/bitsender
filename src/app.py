@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
 
-from flask import Flask
-from flask import render_template
+from flask import Flask, safe_join
+from flask import render_template, send_from_directory
 
 here = Path(__file__).parent
 
@@ -15,12 +15,9 @@ def index():
     return resp
 
 
-@app.route('/<page>/')
+@app.route('/p/<path:page>')
 def editor(page):
-    if page in ['message', 'params']:
-        resp = render_template('%s.html' % page, page=page)
-        return resp
-    return "", 404
+    return render_template(page, page=page)
 
 
 if __name__ == '__main__':

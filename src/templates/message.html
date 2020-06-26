@@ -25,7 +25,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam nisi mi, lacinia 
                 url: $url.val(),
                 type: 'post',
                 dataType: 'json',
-                // contentType: 'application/json',
                 data: JSON.stringify({
                     message: $message.val(),
                 }),
@@ -39,7 +38,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam nisi mi, lacinia 
                 },
                 crossDomain: true,
                 success: function (data) {
-                    showMessage("Message sent.", "success")
+                    showMessage(data.message + ":  #" + data.id, "success")
                 },
                 error: function (data) {
                     console.info(data);
